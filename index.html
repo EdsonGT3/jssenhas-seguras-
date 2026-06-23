@@ -4,36 +4,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de senha</title>
+    <title>Gerador de Senhas Seguras</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <section class="conteudo">
+        <!-- Cabeçalho -->
         <div class="conteudo-titulo">
-            <img src="unlock.svg" alt="cadeado fechado">
-            <h2 class="titulo-principal">Gerador de senhas</h2>
+            <svg class="icone-cadeado" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 1C6.48 1 2 5.48 2 11V21H22V11C22 5.48 17.52 1 12 1ZM12 3C16.41 3 20 6.59 20 11V19H4V11C4 6.59 7.59 3 12 3ZM12 12C10.9 12 10 12.9 10 14C10 15.1 10.9 16 12 16C13.1 16 14 15.1 14 14C14 12.9 13.1 12 12 12Z" fill="currentColor"/>
+            </svg>
+            <h2 class="titulo-principal">Gerador de Senhas</h2>
             <h3 class="titulo-secundario">Gere instantaneamente uma senha aleatória e segura</h3>
         </div>
+
+        <!-- Campo de Senha -->
         <div class="conteudo-senha">
-            <label for="senha">Senha</label>
-            <input name="senha" type="text" id="campo-senha">
-        </div>
-        <div class="parametro">
-            <h3 class="parametro-titulo">Personalize sua senha</h3>
-            <div class="parametro-coluna__senha">
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Número de caracteres</h4>
-                </div>                
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Características da senha</h4>
+            <div class="senha-container">
+                <div class="campo-e-botoes">
+                    <div class="campo-wrapper">
+                        <label for="campo-senha" class="label-senha">Senha</label>
+                        <input 
+                            name="senha" 
+                            type="text" 
+                            id="campo-senha" 
+                            placeholder="Clique em gerar para criar uma senha"
+                            readonly
+                        >
+                    </div>
+                    <div class="botoes-acao">
+                        <button class="btn btn-gerar" id="btn-gerar" title="Gerar nova senha">
+                            🔄 Gerar
+                        </button>
+                        <button class="btn btn-copiar" id="btn-copiar" title="Copiar para a área de transferência">
+                            📋 Copiar
+                        </button>
+                    </div>
                 </div>
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Força da senha</h4>
+                <div class="indicador-forca">
+                    <div class="forca-label">Força:</div>
+                    <div class="forca-barra">
+                        <div class="forca-preenchimento" id="forca-preenchimento"></div>
+                    </div>
+                    <div class="forca-texto" id="forca-texto">-</div>
                 </div>
             </div>
         </div>
+
+        <!-- Configurações -->
+        <div class="parametro">
+            <h3 class="parametro-titulo">Personalize sua senha</h3>
+            
+            <!-- Seletor de Tipo de Gerador -->
+            <div class="selector-tipo-gerador">
+                <label class="tipo-label">Tipo de Gerador:</label>
+                <div class="tipo-botoes">
+                    <button class="tipo-btn ativo" id="tipo-padrao" data-tipo="padrao">
+                        🔐 Padrão
+                    </button>
+                    <button class="tipo-btn" id="tipo-facil-ler" data-tipo="facil-ler">
+                        👁️ Fácil Ler
+                    </button>
+                    <button class="tipo-btn" id="tipo-facil-falar" data-tipo="facil-falar">
+                        🗣️ Fácil Falar
+                    </button>
+                    <button class="tipo-btn" id="tipo-passphrase" data-tipo="passphrase">
+                        📚 Passphrase
+                    </button>
+                </div>
+            </div>
+
+            <div class="parametro-coluna__senha">
+                <!-- Número de caracteres (para Padrão, Fácil Ler, Fácil Falar) -->
+                <div class="parametro-senha" id="config-comprimento">
+                    <h4 class="parametro-senha__titulo">Comprimento</h4>
+                    <div class="controle-slider">
+                        <input 
+                            type="range" 
+                            id="comprimento-senha" 
+                            min="4" 
+                            max="50" 
+                            value="16"
+                            class="slider"
+                        >
+                        <div class="valor-comprimento">
+                            <span id="valor-comprimento">16</span>
+                            <span>caracteres</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características -->
+                <div class="parametro-senha" id="config-caracteristicas">
+                    <h4 class="parametro-senha__titulo">Características</h4>
+                    <div class="checkboxes-grupo">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="maiusculas" class="checkbox-input" checked>
+                            <span class="checkbox-label">Maiúsculas (A-Z)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="minusculas" class="checkbox-input" checked>
+                            <span class="checkbox-label">Minúsculas (a-z)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="numeros" class="checkbox-input" checked>
+                            <span class="checkbox-label">Números (0-9)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="simbolos" class="checkbox-input" checked>
+                            <span class="checkbox-label">Símbolos (!@#$%...)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Comprimento da Passphrase -->
+                <div class="parametro-senha" id="config-palavras" style="display: none;">
+                    <h4 class="parametro-senha__titulo">Número de Palavras</h4>
+                    <div class="controle-slider">
+                        <input 
+                            type="range" 
+                            id="numero-palavras" 
+                            min="2" 
+                            max="8" 
+                            value="4"
+                            class="slider"
+                        >
+                        <div class="valor-comprimento">
+                            <span id="valor-palavras">4</span>
+                            <span>palavras</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Separador de Passphrase -->
+                <div class="parametro-senha" id="config-separador" style="display: none;">
+                    <h4 class="parametro-senha__titulo">Separador</h4>
+                    <div class="separador-opcoes">
+                        <label class="radio-item">
+                            <input type="radio" name="separador" value="-" class="radio-input" checked>
+                            <span class="radio-label">Hífen (-)</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="separador" value="_" class="radio-input">
+                            <span class="radio-label">Sublinhado (_)</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="separador" value=" " class="radio-input">
+                            <span class="radio-label">Espaço ( )</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="separador" value="." class="radio-input">
+                            <span class="radio-label">Ponto (.)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Capitalização de Passphrase -->
+                <div class="parametro-senha" id="config-capitalizacao" style="display: none;">
+                    <h4 class="parametro-senha__titulo">Capitalização</h4>
+                    <div class="checkboxes-grupo">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="primeira-maiuscula" class="checkbox-input">
+                            <span class="checkbox-label">Primeira letra maiúscula</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="todas-maiusculas" class="checkbox-input">
+                            <span class="checkbox-label">Todas maiúsculas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="numero-no-final" class="checkbox-input">
+                            <span class="checkbox-label">Adicionar número no final</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações -->
+        <div class="info-rodape">
+            <p>💡 Dica: Senhas mais longas com mais características são mais seguras. Use pelo menos 16 caracteres!</p>
+        </div>
     </section>
+
+    <script src="script.js"></script>
 </body>
 
 </html>
